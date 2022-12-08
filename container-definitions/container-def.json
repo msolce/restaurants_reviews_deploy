@@ -1,13 +1,13 @@
 [
     {
-      "name": "binpipe-devops",
-      "image": "879566836351.dkr.ecr.us-east-1.amazonaws.com/workshop:latest",
-      "cpu": 10,
-      "memory": 256,
+      "name": "API",
+      "image": "029288556135.dkr.ecr.us-east-1.amazonaws.com/training:latest",
+      "cpu": 512,
+      "memory": 768,
       "essential": true,
       "portMappings": [
         {
-          "containerPort": 80
+          "containerPort": 3000
         }
       ],
       "logConfiguration": {

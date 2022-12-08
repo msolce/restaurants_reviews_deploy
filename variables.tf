@@ -1,4 +1,4 @@
-variable "key_name" {
+ variable "key_name" {
   type        = string
   description = "The name for ssh key, used for aws_launch_configuration"
   default     = "devops-demo-01"

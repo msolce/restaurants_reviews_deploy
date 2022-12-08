@@ -34,7 +34,7 @@ resource "aws_security_group" "lb" {
 
 resource "aws_lb_target_group" "lb_target_group" {
   name        = "binpipe-target-group"
-  port        = "80"
+  port        = "3000"
   protocol    = "HTTP"
   target_type = "instance"
   vpc_id      = data.aws_vpc.main.id

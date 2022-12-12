@@ -1,9 +1,10 @@
 [
     {
-      "name": "API",
-      "image": "029288556135.dkr.ecr.us-east-1.amazonaws.com/training:latest",
-      "cpu": 512,
-      "memory": 768,
+      "name": "frontend",
+      "image": "029288556135.dkr.ecr.us-east-1.amazonaws.com/frontend-restaurant:latest",
+      "environment": [{"name": "REACT_APP_BASE_URL", "value":"http://test-ecs-lb-1634989434.us-east-1.elb.amazonaws.com:3001"}],
+      "cpu": 11,
+      "memory": 400,
       "essential": true,
       "portMappings": [
         {

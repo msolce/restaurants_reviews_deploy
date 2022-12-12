@@ -32,8 +32,8 @@ resource "aws_security_group" "lb" {
   }
 }
 
-resource "aws_lb_target_group" "lb_target_group" {
-  name        = "binpipe-target-group"
+resource "aws_lb_target_group" "lb_target_group_frontend" {
+  name        = "lb-target-group-frontend"
   port        = "3000"
   protocol    = "HTTP"
   target_type = "instance"
@@ -48,12 +48,38 @@ resource "aws_lb_target_group" "lb_target_group" {
   }
 }
 
-resource "aws_lb_listener" "web-listener" {
+resource "aws_lb_listener" "web-listener-frontend" {
   load_balancer_arn = aws_lb.test-lb.arn
   port              = "80"
   protocol          = "HTTP"
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.lb_target_group.arn
+    target_group_arn = aws_lb_target_group.lb_target_group_frontend.arn
+  }
+}
+
+resource "aws_lb_listener" "web-listener-backend" {
+  load_balancer_arn = aws_lb.test-lb.arn
+  port              = "3001"
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.lb_target_group_backend.arn
+  }
+}
+
+resource "aws_lb_target_group" "lb_target_group_backend" {
+  name        = "lb-target-group-backend"
+  port        = "3001"
+  protocol    = "HTTP"
+  target_type = "instance"
+  vpc_id      = data.aws_vpc.main.id
+  health_check {
+    path                = "/api/v1/restaurants"
+    healthy_threshold   = 2
+    unhealthy_threshold = 10
+    timeout             = 60
+    interval            = 300
+    matcher             = "200,301,302"
   }
 }

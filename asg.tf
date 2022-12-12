@@ -58,17 +58,20 @@ sudo echo "ECS_CLUSTER=${var.cluster_name}" >> /etc/ecs/ecs.config
 EOF
 }
 
+
+
 resource "aws_autoscaling_group" "asg" {
   name                      = "test-asg"
-  launch_configuration      = aws_launch_configuration.lc.name
-  min_size                  = 1
-  max_size                  = 2
-  desired_capacity          = 2
+  min_size                  = 2
+  max_size                  = 4
+  desired_capacity          = 4
   health_check_type         = "ELB"
   health_check_grace_period = 120
+  launch_configuration      = aws_launch_configuration.lc.name
   vpc_zone_identifier       = module.vpc.public_subnets
 
-  target_group_arns     = [aws_lb_target_group.lb_target_group.arn]
+  target_group_arns     = [aws_lb_target_group.lb_target_group_frontend.arn, aws_lb_target_group.lb_target_group_backend.arn] #aws_lb_target_group.lb_target_group_frontend.arn, 
+  
   protect_from_scale_in = true
   lifecycle {
     create_before_destroy = true

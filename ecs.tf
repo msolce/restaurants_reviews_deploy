@@ -32,28 +32,30 @@ resource "aws_ecs_capacity_provider" "test" {
 }
 
 # update file container-def, so it's pulling image from ecr
-resource "aws_ecs_task_definition" "task-definition-test" {
-  family                = "web-family"
+resource "aws_ecs_task_definition" "task-definition-frontend" {
+  family                = "frontend"
   container_definitions = file("container-definitions/container-def.json")
   network_mode          = "bridge"
   tags = {
     "env"       = "dev"
     "createdBy" = "binpipe"
+    "createdBy1" = "binpipe1"
+    "createdBy2" = "binpipe2"
   }
 }
 
-resource "aws_ecs_service" "service" {
-  name            = "web-service"
+resource "aws_ecs_service" "frontend" {
+  name            = "frontend-service"
   cluster         = aws_ecs_cluster.web-cluster.id
-  task_definition = aws_ecs_task_definition.task-definition-test.arn
+  task_definition = aws_ecs_task_definition.task-definition-frontend.arn
   desired_count   = 2
   ordered_placement_strategy {
     type  = "binpack"
     field = "cpu"
   }
   load_balancer {
-    target_group_arn = aws_lb_target_group.lb_target_group.arn
-    container_name   = "API"
+    target_group_arn = aws_lb_target_group.lb_target_group_frontend.arn
+    container_name   = "frontend"
     container_port   = 3000
   }
   # Optional: Allow external changes without Terraform plan difference(for example ASG)
@@ -61,8 +63,44 @@ resource "aws_ecs_service" "service" {
     ignore_changes = [desired_count]
   }
   launch_type = "EC2"
-  depends_on  = [aws_lb_listener.web-listener]
+  depends_on  = [aws_lb_listener.web-listener-frontend]
 }
+
+
+resource "aws_ecs_task_definition" "task-definition-backend" {
+  family                = "backend"
+  container_definitions = file("container-definitions/container-def-backend.json")
+  network_mode          = "bridge"
+  tags = {
+    "env"       = "dev"
+    "createdBy" = "binpipe"
+  }
+}
+
+resource "aws_ecs_service" "backend" {
+  name            = "backend-service"
+  cluster         = aws_ecs_cluster.web-cluster.id
+  task_definition = aws_ecs_task_definition.task-definition-backend.arn
+  desired_count   = 2
+  ordered_placement_strategy {
+    type  = "binpack"
+    field = "cpu"
+  }
+  load_balancer {
+    target_group_arn = aws_lb_target_group.lb_target_group_backend.arn
+    container_name   = "backend"
+    container_port   = 3001
+  }
+  # Optional: Allow external changes without Terraform plan difference(for example ASG)
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+  launch_type = "EC2"
+  depends_on  = [aws_lb_listener.web-listener-backend]
+}
+
+
+
 
 resource "aws_cloudwatch_log_group" "log_group" {
   name = "/ecs/frontend-container"

@@ -1,10 +1,5 @@
 # Provisioning VPC, ECS and ALB using Terraform
 
-[![BINPIPE](https://img.shields.io/badge/BINPIPE-YouTube-red)](https://www.youtube.com/channel/UCPTgt4Wo0MAnuzNEEZlk90A?sub_confirmation=1)
-
-This is the example of creating a simple infrastructure using Terraform and AWS cloud provider. The infrastructure is built using terraform and the example application deployed refers to this repository - https://github.com/BINPIPE/color-test-app.git
-
-
 
 It consists of:
 - Virtual Private Cloud (VPC) with 3 public subnets in 3 availability zones

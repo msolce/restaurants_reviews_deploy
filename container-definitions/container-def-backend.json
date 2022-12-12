@@ -1,0 +1,21 @@
+[
+    {
+      "name": "backend",
+      "image": "029288556135.dkr.ecr.us-east-1.amazonaws.com/backend-api:latest",
+      "cpu": 10,
+      "memory": 512,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 3001
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": { 
+          "awslogs-group" : "/ecs/frontend-container",
+          "awslogs-region": "us-east-1"
+        }
+      }
+    }
+]
